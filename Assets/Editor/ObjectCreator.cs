@@ -94,6 +94,14 @@ public class OverpassQueryEditor : EditorWindow
             
             LineRenderer lineRenderer = country.AddComponent<LineRenderer>();
 
+            Material lineMaterial = new Material(Shader.Find("Standard"));
+
+            // Material의 색상을 변경합니다.
+            lineMaterial.color = Color.black;
+
+            // 생성한 Material을 LineRenderer에 할당합니다.
+            lineRenderer.material = lineMaterial;
+
             // LineRenderer 설정
             lineRenderer.useWorldSpace = false; // 오브젝트의 로컬 공간을 사용
             lineRenderer.positionCount = polygonCollider.points.Length + 1; // 시작점으로 돌아오기 위해 +1
