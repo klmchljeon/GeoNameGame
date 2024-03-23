@@ -77,38 +77,35 @@ public class OverpassQueryEditor : EditorWindow
             string path = Path.Combine("Assets", "Data", name.tags.name_ko + ".json");
             string jsonData = File.ReadAllText(path);
             // Json.NET을 사용한 역직렬화
-            CountryGeomJson countryBounderies = JsonConvert.DeserializeObject<CountryGeomJson>(jsonData);
+            List<ElementGeom> countryBounderies = JsonConvert.DeserializeObject<List<ElementGeom>>(jsonData);
             List<Vector2> locList = new List<Vector2>();
-            foreach (var e in countryBounderies.elements)
+            foreach (var e in countryBounderies)
             {
-                foreach (var w in e.members)
+                foreach (var l in e.locs)
                 {
-                    if (w.role != "outer") continue;
-                    foreach (var loc in w.geometry)
-                    {
-                        locList.Add(new Vector2(loc.y, loc.x));
-                    }
+                    locList.Add(new Vector2(l.x, l.y));
                 }
             }
 
-            List<Vector2> locList2 = new List<Vector2>();
-            int num = locList.Count / 50;
-            int cnt = 0;
-            foreach (Vector2 v in locList)
-            {
-                cnt++;
-                if (cnt == num)
-                {
-                    cnt = 0;
-                    locList2.Add(v);
-                }
-            }
-
-            Debug.Log(locList2.Count);
             GameObject country = new GameObject(name.tags.name_ko);
             country.transform.parent = Selection.transforms[0];
-            PolygonCollider2D collider2D = country.AddComponent<PolygonCollider2D>();
-            collider2D.points = locList2.ToArray();
+            PolygonCollider2D polygonCollider = country.AddComponent<PolygonCollider2D>();
+            polygonCollider.points = locList.ToArray();
+            
+            LineRenderer lineRenderer = country.AddComponent<LineRenderer>();
+
+            // LineRenderer 설정
+            lineRenderer.useWorldSpace = false; // 오브젝트의 로컬 공간을 사용
+            lineRenderer.positionCount = polygonCollider.points.Length + 1; // 시작점으로 돌아오기 위해 +1
+
+            // 폴리곤 콜라이더의 꼭짓점을 따라 선을 그립니다.
+            for (int i = 0; i < polygonCollider.points.Length; i++)
+            {
+                lineRenderer.SetPosition(i, polygonCollider.points[i]);
+            }
+            // 선의 시작점으로 돌아와서 폴리곤을 닫습니다.
+            lineRenderer.SetPosition(polygonCollider.points.Length, polygonCollider.points[0]);
+            
         }
     }
 }

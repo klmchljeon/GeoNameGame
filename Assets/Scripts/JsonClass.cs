@@ -27,22 +27,12 @@ public class Tags
 }
 
 [System.Serializable]
-public class CountryGeomJson
-{
-    [JsonProperty("elements")]
-    public List<ElementGeom> elements { get; set; }
-
-}
-
-[System.Serializable]
 public class ElementGeom
 {
-    [JsonProperty("id")]
-    public int id { get; set; }
-    [JsonProperty("bounds")]
-    public Square bounds { get; set; }
-    [JsonProperty("members")]
-    public List<Way> members { get; set; }
+    [JsonProperty("coodinate")]
+    public List<loc> locs { get; set; }
+    [JsonProperty("center")]
+    public centerLoc bounds { get; set; }
 }
 
 [System.Serializable]
@@ -67,8 +57,17 @@ public class Way
 [System.Serializable]
 public class loc
 {
-    [JsonProperty("lat")]
+    [JsonProperty("x")]
     public float x { get; set; }
-    [JsonProperty("lon")]
+    [JsonProperty("y")]
+    public float y { get; set; }
+}
+
+[System.Serializable]
+public class centerLoc
+{
+    [JsonProperty("cx")]
+    public float x { get; set; }
+    [JsonProperty("cy")]
     public float y { get; set; }
 }
